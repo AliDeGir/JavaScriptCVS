@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <title>JS Papa parse CSV</title>
+</head>
+<body>
+
+    <div id="demo-container">
+        <div id="demo-div"></div>
+    </div>
+
+    <div id="input-div">
+        <input type="file" accept=".csv" id="csv-input" required>
+    </div>
+
+    <div id="select-container" class="hidden">
+        <div id="select1-div">
+            <h2>Select contract type</h2>
+            <select id="select1"></select>
+        </div>
+        <div id="select2-div" class="hidden">
+            <h2>Select name</h2>
+            <select id="select2"></select>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
