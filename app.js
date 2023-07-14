@@ -110,13 +110,23 @@ csvInput.addEventListener('change', (event) => {
                             }
                         }
                         if (!found) {
-                            let emptyObj = { "PAYROLL PERIOD": monthsArray[i] };
+                            let emptyObj = {};
 
                             Object.keys(employeeData[0]).forEach(key => {
-                                if (key !== "PAYROLL PERIOD") {
-                                    emptyObj["Summer av Normal time"] = 0;
-                                    emptyObj["Summer av Overtids timer"] = 0;
-                                    emptyObj["Summer av Normal timer + Overtids timer"] = 0;
+                                if (key === "Summer av Normal timer") {
+                                    emptyObj[key] = 0;
+                                }
+                                else if (key === "Summer av Overtids timer") {
+                                    emptyObj[key] = 0;
+                                }
+                                else if (key === "Summer av Normal timer + Overtids timer") {
+                                    emptyObj[key] = 0;
+                                }
+                                else if (key === "PAYROLL PERIOD") {
+                                    emptyObj[key] = monthsArray[i];
+                                }
+                                else {
+                                    emptyObj[key] = employeeData[0][key];
                                 }
                             });
                             resultArr.push(emptyObj);
