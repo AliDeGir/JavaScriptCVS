@@ -7,11 +7,9 @@ let select2 = document.getElementById('select2');
 demoDiv.innerHTML = 'Welcome!' +
     '<br>Please choose a CSV file and upload';
 
-
 csvInput.addEventListener('change', (event) => {
     const file = event.target.files[0];
 
-    
     select2.selectedIndex = null;
 
     document.getElementById('select-container').classList.remove('hidden');
@@ -48,7 +46,7 @@ csvInput.addEventListener('change', (event) => {
             select1.addEventListener('change', (event) => {
                 document.getElementById('select2-div').classList.remove('hidden');
                 let selectedOpt = event.target.value;
-                console.log(selectedOpt);
+                console.log(`Selected contract typr: ${selectedOpt}`);
 
                 let matchedContractList = [];
 
@@ -57,23 +55,15 @@ csvInput.addEventListener('change', (event) => {
                         matchedContractList.push(row);
                     }
                 });
-
-                // console.log(matchedContractList)
-
                 
                 let matchedNameList = ['-  Select a name  -'];
                 matchedContractList.forEach((row) => {
                     matchedNameList.push(row.PERSON_NAME);
                 });
-
-                // console.log(matchedNameList);
                 
                 let nameList = matchedNameList.filter((element, index) => {
                     return matchedNameList.indexOf(element) === index;
                 });
-
-                // console.log(nameList);
-
                 
                 for (let i = 0; i < nameList.length; i++) {
                     let opt = document.createElement('option');
@@ -87,7 +77,7 @@ csvInput.addEventListener('change', (event) => {
 
                 select2.addEventListener('change', (event) => {
                     selectedName = event.target.value;
-                    console.log(selectedName)
+                    console.log(`Selected name: ${selectedName}`)
                     demoDiv.innerHTML = 'Selected name is:' +
                     '<br>' + selectedName
 
@@ -98,62 +88,45 @@ csvInput.addEventListener('change', (event) => {
                         };
                     });
 
-                    // console.log(employeeData);
                     demoDiv.innerHTML = 'Selected name is:' +
                     '<br>' + selectedName +
                     '<br>Count of activity periods: ' + employeeData.length
 
-                    console.log(employeeData[0])
-                    console.log(Object.keys(employeeData[0]))
+                    console.log(employeeData)
 
                     // CREATE MONTH DETECTION -ONGOING PROCESS
+                    let monthsArray = ['Jan-22', 'Feb-22','Mar-22', 'Apr-22', 'May-22', 'Jun-22', 'Jul-22', 'Aug-22', 'Sep-22', 'Oct-22', 'Nov-22', 'Dec-22', 'Jan-23', 'Feb-23', 'Mar-23'];
                     
-                    
+                    let resultArr = [];
+                    for (let i = 0; i < monthsArray.length; i++) {
+                        let found = false;
+                        
+                        for (let j = 0; j < employeeData.length; j++) {
+                            if (employeeData[j]["PAYROLL PERIOD"] === monthsArray[i]) {
+                                // console.log(employeeData[j])
+                                resultArr.push(employeeData[j]);
+                                found = true;
+                                break
+                            }
+                        }
+                        if (!found) {
+                            let emptyObj = { "PAYROLL PERIOD": monthsArray[i] };
 
-
-                    // ----------------------------
-
-                    
-
-                    let activeMonthsArray = [];
-
-                    // Access obj value with index
-                    employeeData.forEach((row) => {
-                        keysArray = Object.keys(row)
-                        keyToAccess = keysArray[6]
-                        valueToAccess = row[keyToAccess]
-                        // console.log(valueToAccess)
-                        activeMonthsArray.push(valueToAccess)
-                    })
-
-                    console.log(`Active months: ${activeMonthsArray}`)
-
-                    // key = ["PAYROLL PERIOD"];
-
-                    // for (let i = 0; i < monthsArray.length; i++) {
-                    //     if (monthsArray[i] == employeeData[i].PAYROLL_PERIOD) {
-                    //         activeMonths.push(employeeData[i]);
-                    //     };
-                    // };
-                    // for (val of monthsArray) {
-                    //     key = "PAYROLL PERIOD";
-                    //     if (val == employeeData.forEach((row) => row.key)) {
-                    //         activeMonths.push(row);
-                    //     } else {
-                    //         row = {['PAYROLL PERIOD']:val, ['Summer av Normal timer']:0, ['Summer av Overtids timer']:0, ['Summer av Normal timer + Overtids timer']:0};
-                    //         activeMonths.push(row)
-                    //     };
-                    // };
-
-                    // add month check
+                            Object.keys(employeeData[0]).forEach(key => {
+                                if (key !== "PAYROLL PERIOD") {
+                                    emptyObj["Summer av Normal time"] = 0;
+                                    emptyObj["Summer av Overtids timer"] = 0;
+                                    emptyObj["Summer av Normal timer + Overtids timer"] = 0;
+                                }
+                            });
+                            resultArr.push(emptyObj);
+                        }
+                    }
+                    console.log(resultArr)
+                    // try get each value of object to create missing months
+                    // add month check for last 3 months worked
+                    // add departments basic apployment 
                 });
-
-                
-
-                // debug here, matched name list empty
-
-                
-
             })
         }
     })
