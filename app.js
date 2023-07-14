@@ -103,7 +103,10 @@ csvInput.addEventListener('change', (event) => {
                         
                         for (let j = 0; j < employeeData.length; j++) {
                             if (employeeData[j]["PAYROLL PERIOD"] === monthsArray[i]) {
-                                // console.log(employeeData[j])
+                                // add boolean isWorked for worked months, oposite for non worked months
+                                // if last 3 months worked isActive add boolean
+                                // sum worked hours and avarage for worked months
+                                // count ground personel on each site. (filter sites, choose from site, match site number from data, calculate ground employees that work in site with "stillingsandel" and "ansattforhold")
                                 resultArr.push(employeeData[j]);
                                 found = true;
                                 break
