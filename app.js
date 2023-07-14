@@ -10,6 +10,7 @@ demoDiv.innerHTML = 'Welcome!' +
 csvInput.addEventListener('change', (event) => {
     const file = event.target.files[0];
 
+    // try to reset selectors after new file uploaded
     select2.selectedIndex = null;
 
     document.getElementById('select-container').classList.remove('hidden');
@@ -24,7 +25,12 @@ csvInput.addEventListener('change', (event) => {
             const rawData = results.data;
             console.log(`Count of files: ${rawData.length}`);
 
-            // TESTING FUNCTION FILTERING/CREATING LIST......
+            // Add another evetlistener before contract type selector to determine ground staff on each dept or contract type
+            // Choose dept_no
+            // Filter dept_no
+            // Get all emp_no connected to that site, % and type of contract on each emp_no
+            // Show above info
+            // Turn name filtering to a function???
 
             let conTypeList = ['- Select a contract type -'];
 
@@ -46,7 +52,7 @@ csvInput.addEventListener('change', (event) => {
             select1.addEventListener('change', (event) => {
                 document.getElementById('select2-div').classList.remove('hidden');
                 let selectedOpt = event.target.value;
-                console.log(`Selected contract typr: ${selectedOpt}`);
+                console.log(`Selected contract type: ${selectedOpt}`);
 
                 let matchedContractList = [];
 
@@ -92,8 +98,6 @@ csvInput.addEventListener('change', (event) => {
                     '<br>' + selectedName +
                     '<br>Count of activity periods: ' + employeeData.length
 
-                    console.log(employeeData)
-
                     // CREATE MONTH DETECTION -ONGOING PROCESS
                     let monthsArray = ['Jan-22', 'Feb-22','Mar-22', 'Apr-22', 'May-22', 'Jun-22', 'Jul-22', 'Aug-22', 'Sep-22', 'Oct-22', 'Nov-22', 'Dec-22', 'Jan-23', 'Feb-23', 'Mar-23'];
                     
@@ -103,10 +107,7 @@ csvInput.addEventListener('change', (event) => {
                         
                         for (let j = 0; j < employeeData.length; j++) {
                             if (employeeData[j]["PAYROLL PERIOD"] === monthsArray[i]) {
-                                // add boolean isWorked for worked months, oposite for non worked months
-                                // if last 3 months worked isActive add boolean
-                                // sum worked hours and avarage for worked months
-                                // count ground personel on each site. (filter sites, choose from site, match site number from data, calculate ground employees that work in site with "stillingsandel" and "ansattforhold")
+                                employeeData[j]["hasWorked"] = true;
                                 resultArr.push(employeeData[j]);
                                 found = true;
                                 break
@@ -135,10 +136,34 @@ csvInput.addEventListener('change', (event) => {
                             resultArr.push(emptyObj);
                         }
                     }
-                    console.log(resultArr)
-                    // try get each value of object to create missing months
-                    // add month check for last 3 months worked
-                    // add departments basic apployment 
+                    // console.log(resultArr);
+
+                    let lastMonthsCount = 0;
+                    let workedHoursSum = 0;
+
+                    resultArr.forEach((row) => {
+                        decimalHours = parseFloat(row["Summer av Normal timer + Overtids timer"]);
+                        
+                        workedHoursSum += parseFloat(row["Summer av Normal timer + Overtids timer"])
+                        // console.log(`Worked hours sum: ${workedHoursSum} - Hours to add: ${row["Summer av Normal timer + Overtids timer"]} - Decimal: ${decimalHours.toFixed(1)}`)
+                        if (row["PAYROLL PERIOD"] == "Jan-23"||row["PAYROLL PERIOD"] == "Feb-23"||row["PAYROLL PERIOD"] == "Mar-23") {
+                            lastMonthsCount++;
+                            if (lastMonthsCount >= 2) {
+                                row["isActive"] = true;
+                            }
+                        }
+                    });
+                    
+                    let averagePerMonth = parseFloat(workedHoursSum) / parseFloat(employeeData.length)
+                    // console.log(`Worked hours: ${workedHoursSum} - Active months: ${employeeData.length} - Average: ${averagePerMonth.toFixed(1)}`)
+                    let lastMessage = "Chosen employee: " + selectedName +
+                    "<br>Contract type: " + selectedOpt +
+                    "<br>Active months: " + employeeData.length +
+                    "<br>Worked total hours: " + workedHoursSum +
+                    "<br>Average of: " + averagePerMonth.toFixed(1) + "%";
+                    demoDiv.innerHTML = lastMessage
+
+                    // sum worked hours and avarage for worked months. decimals not working. DEBUG!!!!
                 });
             })
         }
