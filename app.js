@@ -105,9 +105,14 @@ csvInput.addEventListener('change', (event) => {
                     for (let i = 0; i < monthsArray.length; i++) {
                         let found = false;
                         
+
+                        // Create if total hours === 0, hasWorked = true.
                         for (let j = 0; j < employeeData.length; j++) {
                             if (employeeData[j]["PAYROLL PERIOD"] === monthsArray[i]) {
-                                employeeData[j]["hasWorked"] = true;
+                                if (employeeData[j]["Summer av Normal timer + Overtids timer"] !== "0") {
+                                    employeeData[j]["hasWorked"] = true;
+                                }
+                                
                                 resultArr.push(employeeData[j]);
                                 found = true;
                                 break
@@ -118,13 +123,13 @@ csvInput.addEventListener('change', (event) => {
 
                             Object.keys(employeeData[0]).forEach(key => {
                                 if (key === "Summer av Normal timer") {
-                                    emptyObj[key] = 0;
+                                    emptyObj[key] = "0";
                                 }
                                 else if (key === "Summer av Overtids timer") {
-                                    emptyObj[key] = 0;
+                                    emptyObj[key] = "0";
                                 }
                                 else if (key === "Summer av Normal timer + Overtids timer") {
-                                    emptyObj[key] = 0;
+                                    emptyObj[key] = "0";
                                 }
                                 else if (key === "PAYROLL PERIOD") {
                                     emptyObj[key] = monthsArray[i];
@@ -133,19 +138,14 @@ csvInput.addEventListener('change', (event) => {
                                     emptyObj[key] = employeeData[0][key];
                                 }
                             });
+                            emptyObj["hasWorked"] = false;
                             resultArr.push(emptyObj);
                         }
                     }
-                    // console.log(resultArr);
 
                     let lastMonthsCount = 0;
-                    let workedHoursSum = 0;
-
-                    resultArr.forEach((row) => {
-                        decimalHours = parseFloat(row["Summer av Normal timer + Overtids timer"]);
-                        
-                        workedHoursSum += parseFloat(row["Summer av Normal timer + Overtids timer"])
-                        // console.log(`Worked hours sum: ${workedHoursSum} - Hours to add: ${row["Summer av Normal timer + Overtids timer"]} - Decimal: ${decimalHours.toFixed(1)}`)
+                    
+                    resultArr.forEach((row) => {            
                         if (row["PAYROLL PERIOD"] == "Jan-23"||row["PAYROLL PERIOD"] == "Feb-23"||row["PAYROLL PERIOD"] == "Mar-23") {
                             lastMonthsCount++;
                             if (lastMonthsCount >= 2) {
@@ -153,17 +153,38 @@ csvInput.addEventListener('change', (event) => {
                             }
                         }
                     });
-                    
-                    let averagePerMonth = parseFloat(workedHoursSum) / parseFloat(employeeData.length)
-                    // console.log(`Worked hours: ${workedHoursSum} - Active months: ${employeeData.length} - Average: ${averagePerMonth.toFixed(1)}`)
+
+                    let workedHoursSum = 0;
+                    for (let k in resultArr) {
+                        strNo = resultArr[k][["Summer av Normal timer + Overtids timer"]]
+
+                        strReplace = parseFloat(strNo.replace(",", "."))
+
+                        floatNum = parseFloat(strReplace)
+
+                        workedHoursSum += floatNum
+
+                    }
+
+                    // SPLIT OVERTIME (try create a function for this)
+
+                    let activeMonthsCount = resultArr.filter(({hasWorked}) => hasWorked === true).length;
+                    let averagePerMonth = workedHoursSum / activeMonthsCount
+
+                    if (activeMonthsCount > 11) {
+                        demoBack.style.background="red";
+                    } else {
+                        demoBack.style.background="green";
+                    }
+
                     let lastMessage = "Chosen employee: " + selectedName +
                     "<br>Contract type: " + selectedOpt +
-                    "<br>Active months: " + employeeData.length +
+                    "<br>Active months: " + activeMonthsCount +
                     "<br>Worked total hours: " + workedHoursSum +
                     "<br>Average of: " + averagePerMonth.toFixed(1) + "%";
                     demoDiv.innerHTML = lastMessage
 
-                    // sum worked hours and avarage for worked months. decimals not working. DEBUG!!!!
+                    console.log(resultArr)
                 });
             })
         }
