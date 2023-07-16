@@ -1,0 +1,38 @@
+* {
+    padding: 0;
+    margin: 0;
+    top: 0;
+    left: 0;
+}
+body {
+    background: rgb(197, 195, 195);
+}
+#demo-container {
+    width: 100vw;
+    height: 70vh;
+    background: rgb(113, 113, 241);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#demo-div {
+    width: 98vw;
+    height: 66vh;
+    background: #d6d1d1;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#control-container {
+    width:80vw;
+    height: auto;
+    display: flex;
+    justify-content: space-around;
+    padding-top: 50px;
+}
+.hidden {
+    visibility: hidden;
+}
